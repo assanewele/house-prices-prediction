@@ -1,0 +1,10 @@
+artifact_location: file:///c:/Users/USER/OneDrive%20-%20ept.sn/Bureau/DIC3_48_2024_2025/MLOps/house-prices-prediction/notebooks/mlruns/0/models/m-767fea94ae374cd98e153a1d5e07d846/artifacts
+creation_timestamp: 1753914376009
+experiment_id: '0'
+last_updated_timestamp: 1753914387701
+model_id: m-767fea94ae374cd98e153a1d5e07d846
+model_type: null
+name: final_model
+source_run_id: dba05377cf984c29b0811a49730d21c7
+status: 2
+status_message: null

@@ -22,7 +22,7 @@ Ce projet utilise les données de la compétition Kaggle [House Prices - Advance
 2. **Placer le fichier `kaggle.json`** dans :
 
    ```
-   C:\Users\<votre_nom_utilisateur>\.kaggle\kaggle.json
+   racine\secrets\kaggle.json
    ```
 
 #### Téléchargement automatique

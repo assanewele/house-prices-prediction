@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/USER/OneDrive%20-%20ept.sn/Bureau/DIC3_48_2024_2025/MLOps/house-prices-prediction/notebooks/mlruns/0/dda143b4a5e84e13959386e1e8f4849f/artifacts
+end_time: 1753897408584
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: dda143b4a5e84e13959386e1e8f4849f
+run_name: RandomForest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753897392301
+status: 3
+tags: []
+user_id: Hamsak
