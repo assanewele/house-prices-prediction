@@ -1,30 +1,37 @@
-# -*- coding: utf-8 -*-
-import click
-import logging
-from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
+import os
+import pathlib
+import zipfile
 
+def download_kaggle_data():
+    base_dir = pathlib.Path(__file__).resolve().parents[2]
+    kaggle_config_dir = base_dir / "secrets"
+    os.environ["KAGGLE_CONFIG_DIR"] = str(kaggle_config_dir)
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    # Importer ici, après avoir défini la variable d'environnement
+    from kaggle.api.kaggle_api_extended import KaggleApi
 
+    data_dir = base_dir / "data" / "raw"
+    data_dir.mkdir(parents=True, exist_ok=True)
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
+    print(f"Authenticating Kaggle API using config dir: {kaggle_config_dir}")
+    api = KaggleApi()
+    api.authenticate()
 
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
+    print("Downloading dataset from Kaggle...")
+    api.competition_download_files(
+        competition="house-prices-advanced-regression-techniques",
+        path=str(data_dir)
+    )
 
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
+    zip_path = data_dir / "house-prices-advanced-regression-techniques.zip"
+    print("Extracting dataset...")
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(data_dir)
 
-    main()
+    print("Cleaning up...")
+    zip_path.unlink()
+
+    print(f"✅ Dataset downloaded and extracted to {data_dir}")
+
+if __name__ == "__main__":
+    download_kaggle_data()
