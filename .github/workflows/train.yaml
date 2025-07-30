@@ -3,9 +3,9 @@ name: Train Model
 on:
   push:
     branches: [ main ]
-    paths: 
-      - 'notebooks/'  # Dépand du projet
-      - 'requirements.txt'
+    # paths: 
+    #   - 'notebooks/'  # Dépand du projet
+    #   - 'requirements.txt'
   workflow_dispatch:
 
 # Ajouter les permissions nécessaires
