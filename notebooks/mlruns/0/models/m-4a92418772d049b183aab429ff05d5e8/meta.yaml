@@ -1,0 +1,10 @@
+artifact_location: file:///c:/Users/USER/OneDrive%20-%20ept.sn/Bureau/DIC3_48_2024_2025/MLOps/house-prices-prediction/notebooks/mlruns/0/models/m-4a92418772d049b183aab429ff05d5e8/artifacts
+creation_timestamp: 1753915480876
+experiment_id: '0'
+last_updated_timestamp: 1753915490312
+model_id: m-4a92418772d049b183aab429ff05d5e8
+model_type: null
+name: best_xgb_model
+source_run_id: 06cdfbc4cae74c2bab41341d3140db09
+status: 2
+status_message: null

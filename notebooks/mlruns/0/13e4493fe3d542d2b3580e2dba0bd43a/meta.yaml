@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/USER/OneDrive%20-%20ept.sn/Bureau/DIC3_48_2024_2025/MLOps/house-prices-prediction/notebooks/mlruns/0/13e4493fe3d542d2b3580e2dba0bd43a/artifacts
+end_time: 1753915386900
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 13e4493fe3d542d2b3580e2dba0bd43a
+run_name: KNN
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753915375465
+status: 3
+tags: []
+user_id: Hamsak
