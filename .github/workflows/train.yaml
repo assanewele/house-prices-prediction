@@ -34,7 +34,7 @@ jobs:
     
     - name: Train model
       run: |
-        jupyter nbconvert --to script house_price_02_modelisation.ipynb
+        jupyter nbconvert --to script notebooks/house_price_02_modelisation.ipynb
         python notebooks/house_price_02_modelisation.py
     
     - name: Upload model artifacts
