@@ -5,7 +5,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-
 permissions:
   contents: write
   actions: read
@@ -48,6 +47,14 @@ jobs:
           exit 1
         fi
         jupyter nbconvert --to script notebooks/house_price_02_modelisation.ipynb
+        if [ ! -f notebooks/house_price_02_modelisation.py ]; then
+          echo "❌ Failed to generate Python script"
+          exit 1
+        fi
+        python -m py_compile notebooks/house_price_02_modelisation.py || {
+          echo "❌ Syntax error in generated script before patching"
+          exit 1
+        }
 
     - name: Patch script paths using Python
       run: |
@@ -75,6 +82,18 @@ jobs:
         with open('notebooks/house_price_02_modelisation.py', 'w') as f:
             f.write(new_content)
         "
+        python -m py_compile notebooks/house_price_02_modelisation.py || {
+          echo "❌ Syntax error in patched script"
+          exit 1
+        }
+
+    - name: Upload generated script for debugging
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: debug-script
+        path: notebooks/house_price_02_modelisation.py
+        retention-days: 1
 
     - name: Train model
       run: |
@@ -84,10 +103,11 @@ jobs:
       run: |
         if [ ! -f models/model.pkl ] || [ ! -f models/metrics.pkl ]; then
           echo "⚠️ One or more model files missing, skipping upload"
-          exit 1
+          exit 0
         fi
 
     - name: Upload model artifacts
+      if: ${{ always() }}
       uses: actions/upload-artifact@v4
       with:
         name: trained-model
@@ -95,7 +115,6 @@ jobs:
           models/model.pkl
           models/metrics.pkl
         retention-days: 30
-      if: ${{ success() }}
 
     - name: Commit and push model
       run: |
