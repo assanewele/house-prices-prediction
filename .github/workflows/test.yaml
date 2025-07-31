@@ -33,10 +33,15 @@ jobs:
     - name: Train model
       working-directory: notebooks
       env:
-        MLFLOW_TRACKING_URI: file:./mlruns  # Pas important
+        MLFLOW_TRACKING_URI: file:./mlruns  # ✅ ICI : on redirige MLflow
       run: |
         jupyter nbconvert --to script house_price_02_modelisation.ipynb
         python house_price_02_modelisation.py
+      
+    - name: Debug models directory
+      run: |
+        echo "Contenu de models/"
+        ls -l models
 
     - name: Run tests
       run: |

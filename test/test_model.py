@@ -5,11 +5,9 @@ import unittest
 
 # Charger les seuils
 MODEL_DIR = Path("models")
-model_path = MODEL_DIR / "best_model.pkl"
 metrics_path = MODEL_DIR / "xgb_best_metrics.pkl"
 
-with open(model_path, "rb") as f:
-    best_model = joblib.load(f)
+
 
 with open(metrics_path, "rb") as f:
     metrics = pickle.load(f)
@@ -23,7 +21,6 @@ class TestModel(unittest.TestCase):
     
     def setUp(self):
         """Configuration avant chaque test"""
-        self.model_path = model_path
         self.metrics_path = metrics_path
 
     def test_model_training(self):
