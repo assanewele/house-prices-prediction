@@ -56,7 +56,7 @@ pycaret>=3.0.0
 session-info>=1.0.0
 
 #User interface
-render_template_string
-flask
+
+Flask
 jsonify
 joblib
