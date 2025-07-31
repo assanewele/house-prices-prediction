@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Ensure directories exist
+      run: |
+        mkdir -p notebooks models data/processed
+
     - uses: actions/checkout@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -24,22 +28,64 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install dependencies
+    - name: Install Jupyter dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install jupyter nbconvert
+
+    - name: Install dependencies
+      run: |
+        if [ ! -f requirements.txt ]; then
+          echo "❌ requirements.txt not found"
+          exit 1
+        fi
         pip install -r requirements.txt
 
     - name: Convert notebook to script
       run: |
+        if [ ! -f notebooks/house_price_02_modelisation.ipynb ]; then
+          echo "❌ Notebook not found"
+          exit 1
+        fi
         jupyter nbconvert --to script notebooks/house_price_02_modelisation.ipynb
 
-    - name: Patch script paths
+    - name: Patch script paths using Python
       run: |
-        sed -i 's|DATA_DIR = Path("./../data/")|import os\\nfrom pathlib import Path\\nCURRENT_DIR = Path(__file__).resolve().parent\\nDATA_DIR = CURRENT_DIR.parent / "data"|' notebooks/house_price_02_modelisation.py
+        python -c "
+        with open('notebooks/house_price_02_modelisation.py', 'r') as f:
+            content = f.read()
+        new_content = content.replace('DATA_DIR =', '''from pathlib import Path
+        import os
+        import sys
+
+        CURRENT_DIR = Path(__file__).resolve().parent
+        os.chdir(CURRENT_DIR.parent)
+        DATA_DIR = CURRENT_DIR.parent / \"data\"
+        PROCESSED_DIR = DATA_DIR / \"processed\"
+
+        # Vérification des fichiers nécessaires
+        required_files = [
+            PROCESSED_DIR / \"X_train_processed.csv\",
+            PROCESSED_DIR / \"y_train.csv\"
+        ]
+        for file in required_files:
+            if not file.exists():
+                print(f\"❌ Fichier manquant : {file}\")
+                sys.exit(1)''')
+        with open('notebooks/house_price_02_modelisation.py', 'w') as f:
+            f.write(new_content)
+        "
 
     - name: Train model
       run: |
         python notebooks/house_price_02_modelisation.py
+
+    - name: Check model files exist
+      run: |
+        if [ ! -f models/model.pkl ] || [ ! -f models/metrics.pkl ]; then
+          echo "⚠️ One or more model files missing, skipping upload"
+          exit 1
+        fi
 
     - name: Upload model artifacts
       uses: actions/upload-artifact@v4
@@ -49,6 +95,7 @@ jobs:
           models/model.pkl
           models/metrics.pkl
         retention-days: 30
+      if: ${{ success() }}
 
     - name: Commit and push model
       run: |
@@ -56,7 +103,11 @@ jobs:
         git config --local user.name "GitHub Action"
         git add models/
         if git diff --staged --quiet; then
-          echo "No changes to commit"
+          echo "✅ Aucun changement dans les modèles"
         else
           git commit -m "Update trained model [skip ci]"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main || {
+            echo "⚠️ Push failed, exiting gracefully"
+            exit 0
+          }
+        fi
