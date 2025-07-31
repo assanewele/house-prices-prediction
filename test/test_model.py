@@ -28,7 +28,7 @@ class TestModel(unittest.TestCase):
 
         rmse = metrics.get("rmse", 0)
         mae = metrics.get("mae", 0)
-        r2 = metrics.get("r2", 0)
+        r2 = metrics.get("r", 0)
 
         self.assertGreater(rmse, RMSE_SEUIL)
         self.assertGreater(mae, MAE_SEUIL)   
