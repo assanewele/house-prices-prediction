@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 
-# Chargement du modèle au démarrage
+# Chargement du modèle au démarrage 
 model_path = 'models/model.pkl'
 if os.path.exists(model_path):
     model = joblib.load(model_path)
