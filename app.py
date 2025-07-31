@@ -5,37 +5,14 @@ import os
 
 app = Flask(__name__)
 
-# === Chargement du modèle
-MODEL_PATH = "models/best_model.pkl"
-model = joblib.load(MODEL_PATH) if os.path.exists(MODEL_PATH) else None
+# Chargement du modèle au démarrage
+model_path = 'models/model.pkl'
+if os.path.exists(model_path):
+    model = joblib.load(model_path)
+else:
+    model = None
 
-# === Liste des 75 features
-FEATURE_NAMES = [
-    "num__Fireplaces", "num__GarageArea", "num__LotFrontage", "num__OverallQual",
-    "num__BsmtFinSF1", "num__GrLivArea", "num__total_bathrooms", "num__WoodDeckSF",
-    "num__GarageCars", "num__BedroomAbvGr", "num__building_age", "num__BsmtUnfSF",
-    "num__total_sf", "num__LotArea", "num__remodel_age", "num__garage_age",
-    "num__MasVnrArea", "num__OpenPorchSF", "num__MSSubClass", "num__TotRmsAbvGrd",
-    "cat__KitchenQual_Ex", "cat__KitchenQual_Fa", "cat__KitchenQual_Gd", "cat__KitchenQual_TA",
-    "cat__GarageType_2Types", "cat__GarageType_Attchd", "cat__GarageType_Basment", "cat__GarageType_BuiltIn",
-    "cat__GarageType_CarPort", "cat__GarageType_Detchd", "cat__GarageType_None",
-    "cat__BsmtQual_Ex", "cat__BsmtQual_Fa", "cat__BsmtQual_Gd", "cat__BsmtQual_None", "cat__BsmtQual_TA",
-    "cat__GarageFinish_Fin", "cat__GarageFinish_None", "cat__GarageFinish_RFn", "cat__GarageFinish_Unf",
-    "cat__Foundation_BrkTil", "cat__Foundation_CBlock", "cat__Foundation_PConc", "cat__Foundation_Slab",
-    "cat__Foundation_Stone", "cat__Foundation_Wood",
-    "cat__ExterQual_Ex", "cat__ExterQual_Fa", "cat__ExterQual_Gd", "cat__ExterQual_TA",
-    "cat__Neighborhood_Blmngtn", "cat__Neighborhood_Blueste", "cat__Neighborhood_BrDale",
-    "cat__Neighborhood_BrkSide", "cat__Neighborhood_ClearCr", "cat__Neighborhood_CollgCr",
-    "cat__Neighborhood_Crawfor", "cat__Neighborhood_Edwards", "cat__Neighborhood_Gilbert",
-    "cat__Neighborhood_IDOTRR", "cat__Neighborhood_MeadowV", "cat__Neighborhood_Mitchel",
-    "cat__Neighborhood_NAmes", "cat__Neighborhood_NPkVill", "cat__Neighborhood_NWAmes",
-    "cat__Neighborhood_NoRidge", "cat__Neighborhood_NridgHt", "cat__Neighborhood_OldTown",
-    "cat__Neighborhood_SWISU", "cat__Neighborhood_Sawyer", "cat__Neighborhood_SawyerW",
-    "cat__Neighborhood_Somerst", "cat__Neighborhood_StoneBr", "cat__Neighborhood_Timber",
-    "cat__Neighborhood_Veenker"
-]
-
-# === Interface utilisateur HTML intégrée
+# Template HTML pour le frontend
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="fr">
@@ -173,10 +150,18 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route("/health", methods=["GET"])
-def health():
-    return jsonify({"status": "ok", "model_loaded": model is not None})
+@app.route('/model-info', methods=['GET'])
+def model_info():
+    """Informations sur le modèle"""
+    if model is None:
+        return jsonify({'error': 'Modèle non chargé'}), 500
+    
+    metrics_path = 'models/metrics.pkl'
+    if os.path.exists(metrics_path):
+        metrics = joblib.load(metrics_path)
+        return jsonify(metrics)
+    else:
+        return jsonify({'model_type': 'RandomForestClassifier'})
 
-# === Lancer l'app
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
