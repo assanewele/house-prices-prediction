@@ -11,24 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
-    # Dépand des projet
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # Dépand des projet
-    - name: Train model for testing
+    - name: Prepare data
+      working-directory: notebooks
       run: |
-        jupyter nbconvert --to script notebooks/house_price_02_modelisation.ipynb
-        python notebooks/house_price_02_modelisation.py
+        jupyter nbconvert --to script house_price_01_data_processing.ipynb
+        python house_price_01_data_processing.py
+
+    - name: Train model
+      working-directory: notebooks
+      run: |
+        jupyter nbconvert --to script house_price_02_modelisation.ipynb
+        python house_price_02_modelisation.py
 
     - name: Run tests
       run: |
