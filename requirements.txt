@@ -57,6 +57,3 @@ session-info>=1.0.0
 
 #User interface
 
-Flask
-jsonify
-joblib
