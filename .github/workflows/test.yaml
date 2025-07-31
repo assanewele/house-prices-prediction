@@ -9,27 +9,27 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    needs: train  # Dépendance avec le job 'train' du workflow Train Model
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-    
+
+    # Dépand des projet
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    
-    - name: Download model artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: trained-model
-        path: models/
-    
+
+    # Dépand des projet
+    - name: Train model for testing
+      run: |
+        jupyter nbconvert --to script notebooks/house_price_02_modelisation.ipynb
+        python notebooks/house_price_02_modelisation.py
+
     - name: Run tests
       run: |
         python -m pytest tests/ -v
