@@ -1,0 +1,63 @@
+name: Deploy  Model
+
+on:
+  workflow_run:
+    workflows: ["Test Model"]
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Ensure model is available
+      run: |
+        if [ ! -f "models/best_model.pkl" ]; then
+          echo "❌ Modèle non trouvé, entraînement nécessaire"
+          exit 1
+        else
+          echo "✅ Modèle trouvé : models/best_model.pkl"
+          ls -l models/
+        fi
+
+    - name: Build Docker image
+      run: |
+        docker build -t house-price-predictor:latest .
+        echo "✅ Docker image built successfully!"
+
+    - name: Login to Docker Hub
+      if: github.ref == 'refs/heads/main'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Push Docker image to Docker Hub
+      if: github.ref == 'refs/heads/main'
+      run: |
+        docker tag house-price-predictor:latest ${{ secrets.DOCKER_USERNAME }}/house-price-predictor:latest
+        docker tag house-price-predictor:latest ${{ secrets.DOCKER_USERNAME }}/house-price-predictor:v${{ github.run_id }}
+        
+        docker push ${{ secrets.DOCKER_USERNAME }}/house-price-predictor:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/house-price-predictor:v${{ github.run_id }}
+
+        echo "✅ Image pushed to Docker Hub!"

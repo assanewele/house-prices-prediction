@@ -54,3 +54,9 @@ pycaret>=3.0.0
 
 # Session info for reproducibility
 session-info>=1.0.0
+
+#User interface
+render_template_string
+flask
+jsonify
+joblib
