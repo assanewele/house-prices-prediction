@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 
 # Charger les seuils
-MODEL_DIR = Path("./../models")
+MODEL_DIR = Path("models")
 model_path = MODEL_DIR / "best_model.pkl"
 metrics_path = MODEL_DIR / "xgb_best_metrics.pkl"
 
