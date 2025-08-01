@@ -8,7 +8,7 @@ import random
 app = Flask(__name__)
 
 MODEL_PATH = 'models/best_model.pkl'
-PREPROCESSOR_PATH = 'models/preprocessor.joblib'
+#PREPROCESSOR_PATH = 'models/preprocessor.joblib'
 FEATURE_NAMES = [
     "num__Fireplaces","num__GarageArea","num__LotFrontage","num__OverallQual",
     "num__BsmtFinSF1","num__GrLivArea","num__total_bathrooms","num__WoodDeckSF",
