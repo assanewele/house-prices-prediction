@@ -1,0 +1,22 @@
+artifact_path: file:///c:/Users/USER/OneDrive%20-%20ept.sn/Bureau/DIC3_48_2024_2025/MLOps/house-prices-prediction/notebooks/mlruns/0/models/m-5444f8fb28864e3ba701c4099d3d4690/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.10.18
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.0
+mlflow_version: 3.1.2
+model_id: m-5444f8fb28864e3ba701c4099d3d4690
+model_size_bytes: 3452
+model_uuid: m-5444f8fb28864e3ba701c4099d3d4690
+prompts: null
+run_id: a2741f0a4aa64a5cb18763e8a16acb8b
+utc_time_created: '2025-07-31 18:55:48.068639'
