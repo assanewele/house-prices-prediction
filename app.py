@@ -8,7 +8,7 @@ import random
 app = Flask(__name__)
 
 MODEL_PATH = 'models/best_model.pkl'
-#PREPROCESSOR_PATH = 'models/preprocessor.joblib'
+
 FEATURE_NAMES = [
     "num__Fireplaces","num__GarageArea","num__LotFrontage","num__OverallQual",
     "num__BsmtFinSF1","num__GrLivArea","num__total_bathrooms","num__WoodDeckSF",
@@ -37,6 +37,86 @@ FEATURE_NAMES = [
 
 model = joblib.load(MODEL_PATH) if os.path.exists(MODEL_PATH) else None
 
+def friendly_name(col):
+    mapping = {
+        "num__Fireplaces": "Nombre de cheminées",
+        "num__GarageArea": "Surface du garage",
+        "num__LotFrontage": "Façade du terrain",
+        "num__OverallQual": "Qualité générale",
+        "num__BsmtFinSF1": "Surface finie du sous-sol",
+        "num__GrLivArea": "Surface habitable",
+        "num__total_bathrooms": "Nombre total de salles de bain",
+        "num__WoodDeckSF": "Surface terrasse bois",
+        "num__GarageCars": "Nb voitures garage",
+        "num__BedroomAbvGr": "Chambres à l’étage",
+        "num__building_age": "Âge du bâtiment",
+        "num__BsmtUnfSF": "Sous-sol non aménagé",
+        "num__total_sf": "Surface totale",
+        "num__LotArea": "Surface terrain",
+        "num__remodel_age": "Âge rénovation",
+        "num__garage_age": "Âge du garage",
+        "num__MasVnrArea": "Surface maçonnerie",
+        "num__OpenPorchSF": "Surface porche ouvert",
+        "num__MSSubClass": "Catégorie bâtiment",
+        "num__TotRmsAbvGrd": "Nb pièces (hors SDB)",
+        "cat__KitchenQual_Ex": "Cuisine: Excellent",
+        "cat__KitchenQual_Fa": "Cuisine: Faible",
+        "cat__KitchenQual_Gd": "Cuisine: Bonne",
+        "cat__KitchenQual_TA": "Cuisine: Moyenne",
+        "cat__GarageType_2Types": "Garage: 2 types",
+        "cat__GarageType_Attchd": "Garage: Attenant",
+        "cat__GarageType_Basment": "Garage: Sous-sol",
+        "cat__GarageType_BuiltIn": "Garage: Intégré",
+        "cat__GarageType_CarPort": "Garage: Carport",
+        "cat__GarageType_Detchd": "Garage: Détaché",
+        "cat__GarageType_None": "Pas de garage",
+        "cat__BsmtQual_Ex": "Sous-sol: Excellent",
+        "cat__BsmtQual_Fa": "Sous-sol: Faible",
+        "cat__BsmtQual_Gd": "Sous-sol: Bon",
+        "cat__BsmtQual_None": "Pas de sous-sol",
+        "cat__BsmtQual_TA": "Sous-sol: Moyen",
+        "cat__GarageFinish_Fin": "Finition garage: Fini",
+        "cat__GarageFinish_None": "Finition garage: Aucun",
+        "cat__GarageFinish_RFn": "Finition garage: Moyen",
+        "cat__GarageFinish_Unf": "Finition garage: Brut",
+        "cat__Foundation_BrkTil": "Fondation: Brique/Tuile",
+        "cat__Foundation_CBlock": "Fondation: Bloc béton",
+        "cat__Foundation_PConc": "Fondation: Béton coulé",
+        "cat__Foundation_Slab": "Fondation: Dalle",
+        "cat__Foundation_Stone": "Fondation: Pierre",
+        "cat__Foundation_Wood": "Fondation: Bois",
+        "cat__ExterQual_Ex": "Extérieur: Excellent",
+        "cat__ExterQual_Fa": "Extérieur: Faible",
+        "cat__ExterQual_Gd": "Extérieur: Bon",
+        "cat__ExterQual_TA": "Extérieur: Moyen",
+        "cat__Neighborhood_Blmngtn": "Quartier: Blmngtn",
+        "cat__Neighborhood_Blueste": "Quartier: Blueste",
+        "cat__Neighborhood_BrDale": "Quartier: BrDale",
+        "cat__Neighborhood_BrkSide": "Quartier: BrkSide",
+        "cat__Neighborhood_ClearCr": "Quartier: ClearCr",
+        "cat__Neighborhood_CollgCr": "Quartier: CollgCr",
+        "cat__Neighborhood_Crawfor": "Quartier: Crawfor",
+        "cat__Neighborhood_Edwards": "Quartier: Edwards",
+        "cat__Neighborhood_Gilbert": "Quartier: Gilbert",
+        "cat__Neighborhood_IDOTRR": "Quartier: IDOTRR",
+        "cat__Neighborhood_MeadowV": "Quartier: MeadowV",
+        "cat__Neighborhood_Mitchel": "Quartier: Mitchel",
+        "cat__Neighborhood_NAmes": "Quartier: NAmes",
+        "cat__Neighborhood_NPkVill": "Quartier: NPkVill",
+        "cat__Neighborhood_NWAmes": "Quartier: NWAmes",
+        "cat__Neighborhood_NoRidge": "Quartier: NoRidge",
+        "cat__Neighborhood_NridgHt": "Quartier: NridgHt",
+        "cat__Neighborhood_OldTown": "Quartier: OldTown",
+        "cat__Neighborhood_SWISU": "Quartier: SWISU",
+        "cat__Neighborhood_Sawyer": "Quartier: Sawyer",
+        "cat__Neighborhood_SawyerW": "Quartier: SawyerW",
+        "cat__Neighborhood_Somerst": "Quartier: Somerst",
+        "cat__Neighborhood_StoneBr": "Quartier: StoneBr",
+        "cat__Neighborhood_Timber": "Quartier: Timber",
+        "cat__Neighborhood_Veenker": "Quartier: Veenker"
+    }
+    return mapping.get(col, col)
+
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="fr">
@@ -61,9 +141,6 @@ HTML_TEMPLATE = """
             width: 100%;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
-        input[type="file"] {
-            margin-bottom: 1rem;
-        }
         .button-group button {
             padding: 10px 20px;
             background-color: #667eea;
@@ -79,6 +156,8 @@ HTML_TEMPLATE = """
             background-color: #f0f0f0;
             padding: 1rem;
             border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
         }
         table {
             width: 100%;
@@ -88,7 +167,7 @@ HTML_TEMPLATE = """
         th, td {
             border: 1px solid #ddd;
             padding: 6px 10px;
-            text-align: center;
+            text-align: left;
         }
     </style>
 </head>
@@ -108,10 +187,15 @@ HTML_TEMPLATE = """
     <div class="result">
         <h3>🔍 Données utilisées :</h3>
         <table>
-            <tr>{% for col in feature_names %}<th>{{ col }}</th>{% endfor %}</tr>
-            {% for row in inputs %}
-                <tr>{% for val in row %}<td>{{ val }}</td>{% endfor %}</tr>
-            {% endfor %}
+            <thead><tr><th>Caractéristique</th><th>Valeur</th></tr></thead>
+            <tbody>
+                {% for i in range(feature_names | length) %}
+                    <tr>
+                        <td>{{ friendly_name(feature_names[i]) }}</td>
+                        <td>{{ inputs[0][i] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
     {% endif %}
@@ -134,7 +218,6 @@ def index():
         action = request.form.get("action")
 
         if action == "generate":
-            # Générer une ligne avec des valeurs réalistes aléatoires
             row = [round(random.uniform(-2, 3), 4) for _ in FEATURE_NAMES]
             inputs.append(row)
             if model:
@@ -149,7 +232,7 @@ def index():
                     if model:
                         predictions = model.predict(df[FEATURE_NAMES])
 
-    return render_template_string(HTML_TEMPLATE, predictions=predictions, inputs=inputs, feature_names=FEATURE_NAMES)
+    return render_template_string(HTML_TEMPLATE, predictions=predictions, inputs=inputs, feature_names=FEATURE_NAMES, friendly_name=friendly_name)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
