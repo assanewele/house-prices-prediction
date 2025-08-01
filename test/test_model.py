@@ -13,8 +13,8 @@ with open(metrics_path, "rb") as f:
     metrics = pickle.load(f)
 
 # Afficher les métriques
-RMSE_SEUIL = 25000
-MAE_SEUIL = 15000
+RMSE_SEUIL = 0.1
+MAE_SEUIL = 0.015000
 R2_SEUIL = 0.85
 
 class TestModel(unittest.TestCase):

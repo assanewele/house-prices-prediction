@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ main ]
   push:
-    # branches: [ main ]
+     branches: [ main ]
 
 jobs:
   test:
@@ -35,8 +35,8 @@ jobs:
       env:
         MLFLOW_TRACKING_URI: file:./mlruns  #
       run: |
-        jupyter nbconvert --to script house_price_02_modelisation.ipynb
-        python house_price_02_modelisation.py
+        jupyter nbconvert --to script house_price_03_modelisation_for_pipeline.ipynb
+        python house_price_03_modelisation_for_pipeline.py
       
     - name: Debug models directory
       run: |
