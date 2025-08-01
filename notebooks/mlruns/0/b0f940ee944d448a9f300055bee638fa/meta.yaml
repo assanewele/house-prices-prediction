@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/USER/OneDrive%20-%20ept.sn/Bureau/DIC3_48_2024_2025/MLOps/house-prices-prediction/notebooks/mlruns/0/b0f940ee944d448a9f300055bee638fa/artifacts
+end_time: 1754068886834
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b0f940ee944d448a9f300055bee638fa
+run_name: baseline_linear_regression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754068862381
+status: 3
+tags: []
+user_id: Hamsak
