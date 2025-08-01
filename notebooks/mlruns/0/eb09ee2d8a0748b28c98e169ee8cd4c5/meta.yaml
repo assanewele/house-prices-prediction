@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/USER/OneDrive%20-%20ept.sn/Bureau/DIC3_48_2024_2025/MLOps/house-prices-prediction/notebooks/mlruns/0/eb09ee2d8a0748b28c98e169ee8cd4c5/artifacts
+end_time: 1753979051565
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: eb09ee2d8a0748b28c98e169ee8cd4c5
+run_name: XGBoost_Tuning_test
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753979011456
+status: 3
+tags: []
+user_id: Hamsak

@@ -1,0 +1,14 @@
+artifact_uri: file:///c:/Users/USER/OneDrive%20-%20ept.sn/Bureau/DIC3_48_2024_2025/MLOps/house-prices-prediction/notebooks/mlruns/0/2e62f8277f204d0f841a31a84d9e2ede/artifacts
+end_time: 1753978806898
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 2e62f8277f204d0f841a31a84d9e2ede
+run_name: SVR
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753978789340
+status: 3
+tags: []
+user_id: Hamsak
