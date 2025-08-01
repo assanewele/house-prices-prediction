@@ -36,7 +36,7 @@ jobs:
         MLFLOW_TRACKING_URI: file:./mlruns  #
       run: |
         jupyter nbconvert --to script house_price_03_modelisation_for_pipeline.ipynb
-        python ouse_price_03_modelisation_for_pipeline.py
+        python house_price_03_modelisation_for_pipeline.py
       
     - name: Debug models directory
       run: |
